@@ -20,6 +20,18 @@ public class Deck {
         Collections.shuffle(deck);
     }
 
+    public void cut() {
+        if (deck.size() < 2) {
+            throw new IllegalStateException("Cannot cut a deck with fewer than 2 cards");
+        }
+        int cutPoint = 1 + (int) (Math.random() * (deck.size() - 1));
+        List<Card> bottom = new ArrayList<>(deck.subList(0, cutPoint));
+        List<Card> top = new ArrayList<>(deck.subList(cutPoint, deck.size()));
+        deck.clear();
+        deck.addAll(top);
+        deck.addAll(bottom);
+    }
+
     public Card draw() {
         if (deck.isEmpty()) {
             throw new IllegalStateException("Deck is empty, cannot draw a card");

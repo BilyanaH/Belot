@@ -3,6 +3,7 @@ package bg.belot.backend.game.player;
 import bg.belot.backend.game.card.Card;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,10 @@ public class Player {
     @Getter
     private final String name;
     private final List<Card> hand;
+
+    @Getter
+    @Setter
+    private Team team;
 
     public Player(String name) {
         this.name = name;

@@ -13,6 +13,8 @@ public class Team {
     public Team(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
+        player1.setTeam(this);
+        player2.setTeam(this);
     }
 
     public List<Player> getPlayers() {

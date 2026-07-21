@@ -1,6 +1,7 @@
 package bg.belot.backend.game.card;
 
 import bg.belot.backend.game.bidding.Announcement;
+import bg.belot.backend.game.rules.TrumpContext;
 
 import java.util.Map;
 
