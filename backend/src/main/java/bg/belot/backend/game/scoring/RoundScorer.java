@@ -8,6 +8,11 @@ import bg.belot.backend.game.trick.Trick;
 import java.util.List;
 
 public class RoundScorer {
+    private static final int CAPOT_BONUS_POINTS = 90;
+    private static final int LAST_TRICK_BONUS_POINTS = 10;
+    private static final int NO_TRUMP_MULTIPLIER = 2;
+    private static final float TENS_DIVISOR = 10.0f;
+
     public static int getRawPoints(Team team, List<Trick> tricks, Announcement announcement) {
         int points = 0;
         for (Trick trick : tricks) {
@@ -23,16 +28,16 @@ public class RoundScorer {
         boolean isCapot = tricks.stream().allMatch(t -> team.hasPlayer(t.getWinner()));
 
         if (isCapot) {
-            points += 90;
+            points += CAPOT_BONUS_POINTS;
         }
         if (team.hasPlayer(tricks.getLast().getWinner())) {
-            points += 10;
+            points += LAST_TRICK_BONUS_POINTS;
         }
         return points;
     }
 
     public static int applyMultiplier(int points, Announcement announcement) {
-        return announcement.type() == AnnouncementType.NO_TRUMP ? points * 2 : points;
+        return announcement.type() == AnnouncementType.NO_TRUMP ? points * NO_TRUMP_MULTIPLIER : points;
     }
 
     public static RoundResult score(Team announcingTeam, Team opponentTeam,
@@ -54,6 +59,6 @@ public class RoundScorer {
     }
 
     private static int roundToTens(int points) {
-        return Math.round(points / 10.0f);
+        return Math.round(points / TENS_DIVISOR);
     }
 }

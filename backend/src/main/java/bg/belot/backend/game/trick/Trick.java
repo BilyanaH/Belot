@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Trick {
+    private static final int PLAYERS_PER_TRICK = 4;
+
     @Getter
     private final Announcement announcement;
     private final Map<Player, Card> playedCards;
@@ -39,7 +41,7 @@ public class Trick {
     }
 
     public boolean isComplete() {
-        return playedCards.size() == 4;
+        return playedCards.size() == PLAYERS_PER_TRICK;
     }
 
     public Player getWinner() {

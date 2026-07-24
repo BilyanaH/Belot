@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BiddingRound {
+    private static final int CONSECUTIVE_PASSES_TO_END = 3;
+    private static final int CONSECUTIVE_PASSES_TO_REDEAL = 4;
+
     private final List<Player> players;
     private final List<Announcement> announcements;
 
@@ -27,7 +30,7 @@ public class BiddingRound {
     }
 
     public boolean isFinished() {
-        if (announcements.size() < 3) {
+        if (announcements.size() < CONSECUTIVE_PASSES_TO_END) {
             return false;
         }
         return isPass(announcements.getLast())
@@ -36,7 +39,7 @@ public class BiddingRound {
     }
 
     private boolean isPass(Announcement announcement) {
-        if (announcements.size() < 4) {
+        if (announcements.size() < CONSECUTIVE_PASSES_TO_REDEAL) {
             return false;
         }
         return announcement.type() == AnnouncementType.PASS;

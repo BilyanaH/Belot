@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
+    private static final int INITIAL_HAND_SIZE = 8;
+    private static final int TRICKS_PER_ROUND = 8;
+
     private final List<Player> players;
     private final Deck deck;
     @Getter
@@ -24,7 +27,7 @@ public class Game {
         this.players = players;
         this.deck = deck;
         for (Player player : players) {
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < INITIAL_HAND_SIZE; i++) {
                 player.addCard(deck.draw());
             }
         }
@@ -65,7 +68,7 @@ public class Game {
     }
 
     public boolean isFinished() {
-        return tricks.size() == 8 && tricks.getLast().isComplete();
+        return tricks.size() == TRICKS_PER_ROUND && tricks.getLast().isComplete();
     }
 
     public List<Card> getCardsWonByTeam(Team team) {
