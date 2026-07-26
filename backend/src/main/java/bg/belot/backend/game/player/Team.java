@@ -11,6 +11,12 @@ public class Team {
     private int score;
 
     public Team(Player player1, Player player2) {
+        if (player1 == null || player2 == null) {
+            throw new IllegalArgumentException("Players cannot be null");
+        }
+        if (player1.equals(player2)) {
+            throw new IllegalArgumentException("Team must have two different players");
+        }
         this.player1 = player1;
         this.player2 = player2;
         player1.setTeam(this);
@@ -22,6 +28,9 @@ public class Team {
     }
 
     public void addScore(int points) {
+        if (points < 0) {
+            throw new IllegalArgumentException("Points cannot be negative");
+        }
         score += points;
     }
 

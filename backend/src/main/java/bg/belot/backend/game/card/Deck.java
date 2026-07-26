@@ -42,4 +42,8 @@ public class Deck {
     public int remainingCount() {
         return deck.size();
     }
+
+    public void returnCards(List<Card> cardsWonByTeam) {
+        deck.addAll(cardsWonByTeam);
+    }
 }

@@ -2,6 +2,7 @@ package bg.belot.backend.game.scoring;
 
 import bg.belot.backend.game.bidding.Announcement;
 import bg.belot.backend.game.bidding.AnnouncementType;
+import bg.belot.backend.game.meld.Meld;
 import bg.belot.backend.game.player.Team;
 import bg.belot.backend.game.trick.Trick;
 
@@ -41,14 +42,12 @@ public class RoundScorer {
     }
 
     public static RoundResult score(Team announcingTeam, Team opponentTeam,
-                                    List<Trick> tricks, Announcement announcement) {
-        int announcingTeamPoints = getRawPoints(announcingTeam, tricks, announcement)
-                + getBonusPoints(announcingTeam, tricks);
-        announcingTeamPoints = applyMultiplier(announcingTeamPoints, announcement);
+                                    List<Trick> tricks,
+                                    Announcement announcement, int multiplier,
+                                    List<Meld> announcingTeamMelds, List<Meld> opponentTeamMelds) {
 
-        int opponentTeamPoints = getRawPoints(opponentTeam, tricks, announcement)
-                + getBonusPoints(opponentTeam, tricks);
-        opponentTeamPoints = applyMultiplier(opponentTeamPoints, announcement);
+        int announcingTeamPoints = totalPoints(announcingTeam, tricks, announcement, multiplier, announcingTeamMelds);
+        int opponentTeamPoints = totalPoints(opponentTeam, tricks, announcement, multiplier, opponentTeamMelds);
 
         if (announcingTeamPoints > opponentTeamPoints) {
             return new RoundResult(Outcome.OUT, roundToTens(announcingTeamPoints), roundToTens(opponentTeamPoints));
@@ -60,5 +59,22 @@ public class RoundScorer {
 
     private static int roundToTens(int points) {
         return Math.round(points / TENS_DIVISOR);
+    }
+
+    public static int getMeldPoints(List<Meld> melds) {
+        return melds.stream()
+                .mapToInt(m -> m.type().getPoints())
+                .sum();
+    }
+
+    private static int totalPoints(Team team, List<Trick> tricks, Announcement announcement,
+                                   int multiplier, List<Meld> melds) {
+        int cardPoints = getRawPoints(team, tricks, announcement) + getBonusPoints(team, tricks);
+        cardPoints = applyMultiplier(cardPoints, announcement);
+        cardPoints *= multiplier;
+
+        int meldPoints = getMeldPoints(melds);
+
+        return cardPoints + meldPoints;
     }
 }

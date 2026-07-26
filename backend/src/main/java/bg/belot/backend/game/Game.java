@@ -13,21 +13,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-    private static final int INITIAL_HAND_SIZE = 8;
-    private static final int TRICKS_PER_ROUND = 8;
+    private static final int PLAYERS_COUNT = 4;
+    private static final int CARDS_PER_PLAYER = 8;
+    private static final int TOTAL_CARDS = 32;
+    private static final int TOTAL_TRICKS = 8;
 
     private final List<Player> players;
     private final Deck deck;
     @Getter
     private final BiddingRound biddingRound;
     private final List<Trick> tricks;
+    @Getter
     private Announcement winningAnnouncement;
 
     public Game(List<Player> players, Deck deck) {
+        if (players == null || players.size() != PLAYERS_COUNT) {
+            throw new IllegalArgumentException("Players must be exactly 4");
+        }
+        if (deck == null || deck.remainingCount() < TOTAL_CARDS) {
+            throw new IllegalArgumentException("Deck must have 32 cards");
+        }
         this.players = players;
         this.deck = deck;
         for (Player player : players) {
-            for (int i = 0; i < INITIAL_HAND_SIZE; i++) {
+            for (int i = 0; i < CARDS_PER_PLAYER; i++) {
                 player.addCard(deck.draw());
             }
         }
@@ -36,6 +45,9 @@ public class Game {
     }
 
     public void finalizeBidding() {
+        if (winningAnnouncement != null) {
+            throw new IllegalStateException("Bidding already finalized");
+        }
         this.winningAnnouncement = biddingRound.getWinningAnnouncement();
     }
 
@@ -62,13 +74,19 @@ public class Game {
     }
 
     public void playCard(Player player, Card card) {
+        if (winningAnnouncement == null) {
+            throw new IllegalStateException("Bidding must be finalized before playing cards");
+        }
+        if (isFinished()) {
+            throw new IllegalStateException("Game is already finished");
+        }
         Trick currentTrick = getCurrentTrick();
         currentTrick.playCard(player, card);
         player.playCard(card);
     }
 
     public boolean isFinished() {
-        return tricks.size() == TRICKS_PER_ROUND && tricks.getLast().isComplete();
+        return tricks.size() == TOTAL_TRICKS && tricks.getLast().isComplete();
     }
 
     public List<Card> getCardsWonByTeam(Team team) {
@@ -81,5 +99,9 @@ public class Game {
             }
         }
         return won;
+    }
+
+    public List<Trick> getTricks() {
+        return List.copyOf(tricks);
     }
 }

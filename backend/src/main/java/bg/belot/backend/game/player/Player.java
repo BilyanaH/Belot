@@ -19,6 +19,9 @@ public class Player {
     private Team team;
 
     public Player(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Player name cannot be null or blank");
+        }
         this.name = name;
         hand = new ArrayList<>();
     }
